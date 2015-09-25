@@ -10,7 +10,7 @@ var params = {
     icon_emoji: ':cat:'
 };
 
-var CHANNEL = 'general';
+var CHANNEL = 'iot';
 
 /**
  * @param {object} data
