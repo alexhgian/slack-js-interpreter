@@ -10,6 +10,8 @@ var params = {
     icon_emoji: ':cat:'
 };
 
+var CHANNEL = 'general';
+
 /**
  * @param {object} data
  */
@@ -26,7 +28,7 @@ bot.on('message', function(data) {
             for(var c=0; c<10; c++){
                 tmp += '\n\n\n\n';
             }
-            bot.postMessageToChannel('general', '```'+tmp+'```', params);
+            bot.postMessageToChannel(CHANNEL, '```'+tmp+'```', params);
         }
         var myRe = new RegExp('^!code','i');
 
@@ -44,7 +46,7 @@ bot.on('message', function(data) {
             (function(bot, params, codeStr){
                 var toChannel = function(txt){
                     console.log(txt)
-                    bot.postMessageToChannel('general', String(txt), params);
+                    bot.postMessageToChannel(CHANNEL, String(txt), params);
                 };
                 var fn;
                 try {
@@ -59,18 +61,13 @@ bot.on('message', function(data) {
                             });
                         });
                     } else {
-                        bot.postMessageToChannel('general', 'No function found!', params);
+                        bot.postMessageToChannel(CHANNEL, 'No function found!', params);
                     }
                 } catch(e){
                     console.log(e);
-                    bot.postMessageToChannel('general', String(e), params);
+                    bot.postMessageToChannel(CHANNEL, String(e), params);
                 }
-
-
             })(bot, params, codeStr);
         }
-
     }
-
-
 });
