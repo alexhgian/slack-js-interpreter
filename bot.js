@@ -20,6 +20,14 @@ bot.on('message', function(data) {
 
     // We just want the message not any other junk
     if(data.type == "message" && data.subtype != "bot_message"){
+        var clearRe = new RegExp('^!clear','i');
+        if(clearRe.test(data.text)){
+            var tmp = '';
+            for(var c=0; c<10; c++){
+                tmp += '\n\n\n\n';
+            }
+            bot.postMessageToChannel('general', '```'+tmp+'```', params);
+        }
         var myRe = new RegExp('^!code','i');
 
         //console.log('isCode: ' + myRe.test(data.text));
@@ -34,22 +42,31 @@ bot.on('message', function(data) {
             //console.log(codeStr);
 
             (function(bot, params, codeStr){
+                var toChannel = function(txt){
+                    console.log(txt)
+                    bot.postMessageToChannel('general', String(txt), params);
+                };
                 var fn;
                 try {
                     console.log(codeStr)
-                    fn = new Function('log', codeStr);
+                    fn = new Function('log','msg', codeStr);
+                    if(fn){
+                        fn(toChannel,function(username, txt){
+                            bot.postMessageToUser(username, String(txt), params).then(function(){
+                                toChannel('Sent to user.')
+                            }).fail(function(){
+                                toChannel('Failed to send to user.')
+                            });
+                        });
+                    } else {
+                        bot.postMessageToChannel('general', 'No function found!', params);
+                    }
                 } catch(e){
                     console.log(e);
+                    bot.postMessageToChannel('general', String(e), params);
                 }
 
-                if(fn){
-                    fn(function(txt){
-                        console.log(txt)
-                        bot.postMessageToChannel('general', String(txt), params);
-                    });
-                } else {
-                    bot.postMessageToChannel('general', 'No function found!', params);
-                }
+
             })(bot, params, codeStr);
         }
 
